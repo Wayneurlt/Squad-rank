@@ -85,13 +85,6 @@
               <span class="text-xs text-slate-500">
                 Weight: {{ categoryData.category.weight }}x
               </span>
-              <NuxtLink 
-                :to="`/admin/rank/${categoryData.category.slug}`"
-                class="inline-flex items-center text-xs text-blue-600 hover:text-blue-700 font-medium"
-              >
-                Edit Rankings
-                <Icon name="heroicons:arrow-right" class="w-3 h-3 ml-1" />
-              </NuxtLink>
             </div>
           </div>
 
@@ -282,6 +275,13 @@
                 </div>
               </div>
             </div>
+            
+            <!-- Read-Only Notice for Category -->
+            <div class="pt-4 border-t border-slate-100">
+              <div class="text-center text-xs text-slate-400 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200">
+                📊 View-only rankings • Contact administrator for changes
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -297,13 +297,9 @@
         <p class="text-slate-600 mb-8 max-w-md mx-auto">
           Start ranking your squad members by category to see beautiful tier-based rankings here.
         </p>
-        <NuxtLink 
-          to="/admin"
-          class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-        >
-          <Icon name="heroicons:arrow-right" class="w-5 h-5 mr-2" />
-          Go to Admin
-        </NuxtLink>
+        <div class="text-sm text-slate-500">
+          Contact an administrator to set up rankings
+        </div>
       </div>
     </div>
   </div>
