@@ -14,18 +14,18 @@
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <UButton 
               to="/leaderboard" 
-              size="lg" 
+              size="xl" 
               class="gradient-bg hover:scale-105 transition-transform"
             >
               View Leaderboard
             </UButton>
             <UButton 
-              to="/admin" 
-              variant="outline" 
-              size="lg"
+              to="/rankings" 
+              size="xl" 
+              variant="outline"
               class="hover:scale-105 transition-transform"
             >
-              Admin Panel
+              View Rankings
             </UButton>
           </div>
         </div>

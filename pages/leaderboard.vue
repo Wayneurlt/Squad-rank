@@ -31,125 +31,62 @@
       />
     </div>
 
-    <!-- Simple Rankings List -->
-    <div v-else class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      <div class="space-y-4">
+    <!-- Category Overview Grid -->
+    <div v-else class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      <!-- Simple Info -->
+      <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+        <h3 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">🎯 Simple Tier Ranking</h3>
+        <p class="text-sm text-blue-700 dark:text-blue-300">
+          Click on any category below to rank your squad members into S, A, B, C, or D tiers.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div 
-          v-for="(member, index) in leaderboardData.overall" 
-          :key="member.profile.id"
-          class="glass-card rounded-2xl p-6 transition-all duration-300 hover:scale-102 hover:shadow-lg"
-          :class="{
-            'glow': index < 3,
-            'glow-green': index === 0,
-            'glow-amber': index === 1,
-            'glow-orange': index === 2
-          }"
-          data-aos="fade-up"
-          :data-aos-delay="index * 50"
+          v-for="category in leaderboardData?.categories" 
+          :key="category.category.slug"
+          class="glass-card rounded-2xl p-6 hover:scale-105 transition-transform cursor-pointer"
+          @click="navigateToCategory(category.category.slug)"
         >
-          <div class="flex items-center space-x-4">
-            <!-- Rank Number -->
-            <div class="flex-shrink-0">
-              <div 
-                class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
-                :class="{
-                  'gradient-bg': index < 3,
-                  'bg-slate-400': index >= 3
-                }"
-              >
-                <Icon 
-                  v-if="index === 0" 
-                  name="heroicons:trophy" 
-                  class="w-6 h-6 text-yellow-300"
-                />
-                <Icon 
-                  v-else-if="index === 1" 
-                  name="heroicons:trophy" 
-                  class="w-6 h-6 text-gray-300"
-                />
-                <Icon 
-                  v-else-if="index === 2" 
-                  name="heroicons:trophy" 
-                  class="w-6 h-6 text-amber-600"
-                />
-                <span v-else>{{ index + 1 }}</span>
-              </div>
-            </div>
-
-            <!-- Profile Info -->
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center space-x-4">
-                <!-- Avatar -->
-                <div class="flex-shrink-0">
-                  <div class="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl">
-                    <img 
-                      v-if="member.profile.photoUrl" 
-                      :src="member.profile.photoUrl" 
-                      :alt="member.profile.name"
-                      class="w-full h-full rounded-full object-cover"
-                    />
-                    <span v-else>{{ member.profile.name.charAt(0) }}</span>
-                  </div>
-                </div>
-
-                <!-- Name and Bio -->
-                <div class="flex-1 min-w-0">
-                  <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">
-                    {{ member.profile.name }}
-                    <span v-if="member.profile.nickname" class="text-slate-500 dark:text-slate-400 font-normal text-lg">
-                      ({{ member.profile.nickname }})
-                    </span>
-                  </h3>
-                  <p v-if="member.profile.bio" class="text-slate-600 dark:text-slate-400 mt-1">
-                    {{ member.profile.bio }}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Overall Score -->
-            <div class="flex-shrink-0 text-right">
-              <div class="text-3xl font-bold gradient-text">
-                {{ member.overallScore }}
-              </div>
-              <div class="text-sm text-slate-500 dark:text-slate-400">
-                Total Points
-              </div>
+          <!-- Category Header -->
+          <div class="text-center mb-6">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+              {{ category.category.name }}
+            </h3>
+            <p v-if="category.category.description" class="text-sm text-slate-600 dark:text-slate-400 mb-3">
+              {{ category.category.description }}
+            </p>
+            <div class="inline-flex items-center px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200 rounded-full text-sm font-medium">
+              Weight: {{ category.category.weight }}x
             </div>
           </div>
 
-          <!-- Category Scores -->
-          <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div 
-                v-for="(score, categorySlug) in member.byCategory" 
-                :key="categorySlug"
-                class="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-lg"
-              >
-                <div class="text-xs text-slate-500 dark:text-slate-400 mb-1 font-medium">
-                  {{ getCategoryName(categorySlug) }}
-                </div>
-                <div class="text-lg font-bold text-slate-900 dark:text-slate-100">
-                  {{ score }}
-                </div>
-              </div>
-            </div>
+          <!-- Simple Status -->
+          <div class="text-center mb-6">
+            <div class="text-3xl font-bold text-blue-600">{{ category.totalParticipants }}</div>
+            <div class="text-sm text-slate-600 dark:text-slate-400">Profiles to Rank</div>
+          </div>
+
+          <!-- Action Button -->
+          <div class="mt-4">
+            <button class="w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg font-medium hover:from-blue-600 hover:to-indigo-700 transition-all duration-200">
+              Start Ranking
+            </button>
           </div>
         </div>
       </div>
 
       <!-- Empty State -->
-      <div v-if="leaderboardData.overall.length === 0" class="py-12">
+      <div v-if="!leaderboardData?.categories?.length" class="py-12 text-center">
         <EmptyState
           icon="heroicons:users"
-          title="No squad members found"
-          description="No profiles have been added yet."
+          title="No categories found"
+          description="No ranking categories have been set up yet."
         />
       </div>
     </div>
 
-    <!-- Confetti Canvas -->
-    <ConfettiCanvas ref="confettiRef" />
+
   </div>
 </template>
 
@@ -161,25 +98,14 @@ const {
   refresh 
 } = useLeaderboard()
 
-const { initAOS, createConfetti } = useAnimations()
-const confettiRef = ref()
+const { initAOS } = useAnimations()
 
-const getCategoryName = (slug: string) => {
-  const category = leaderboardData.value?.categories?.find(c => c.category.slug === slug)
-  return category?.category.name || slug
+const navigateToCategory = (slug: string) => {
+  navigateTo(`/category/${slug}`)
 }
 
 onMounted(() => {
   initAOS()
-  
-  // Trigger confetti for top 3 after a delay
-  setTimeout(() => {
-    if (leaderboardData.value?.overall && leaderboardData.value.overall.length > 0) {
-      if (confettiRef.value) {
-        confettiRef.value.burst(window.innerWidth / 2, 100, 30)
-      }
-    }
-  }, 2000)
 })
 
 // SEO

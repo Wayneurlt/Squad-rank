@@ -70,83 +70,44 @@
       </div>
 
       <!-- Rankings List -->
-      <div v-else-if="leaderboardData?.overall" class="space-y-4">
+      <div v-else-if="leaderboardData?.categories?.length" class="space-y-4">
         <div 
-          v-for="(member, index) in leaderboardData.overall.slice(0, 5)" 
-          :key="member.profile.id"
-          class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors"
+          v-for="category in leaderboardData.categories.slice(0, 3)" 
+          :key="category.category.slug"
+          class="p-4 bg-slate-50 dark:bg-slate-700 rounded-xl"
         >
-          <div class="flex items-center space-x-4">
-            <!-- Rank -->
-            <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
-              :class="{
-                'gradient-bg': index < 3,
-                'bg-slate-400': index >= 3
-              }"
-            >
-              <Icon 
-                v-if="index === 0" 
-                name="heroicons:trophy" 
-                class="w-5 h-5 text-yellow-300"
-              />
-              <Icon 
-                v-else-if="index === 1" 
-                name="heroicons:trophy" 
-                class="w-5 h-5 text-gray-300"
-              />
-              <Icon 
-                v-else-if="index === 2" 
-                name="heroicons:trophy" 
-                class="w-5 h-5 text-amber-600"
-              />
-              <span v-else>{{ index + 1 }}</span>
+          <h3 class="font-semibold text-slate-900 dark:text-slate-100 mb-3">
+            {{ category.category.name }}
+          </h3>
+          
+          <!-- Simple Stats -->
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-center">
+              <div class="text-2xl font-bold text-blue-600">{{ category.totalParticipants }}</div>
+              <div class="text-sm text-slate-600 dark:text-slate-400">Total Profiles</div>
             </div>
-
-            <!-- Profile Info -->
-            <div>
-              <h3 class="font-semibold text-slate-900 dark:text-slate-100">
-                {{ member.profile.name }}
-                <span v-if="member.profile.nickname" class="text-slate-500 dark:text-slate-400 font-normal">
-                  ({{ member.profile.nickname }})
-                </span>
-              </h3>
-              <p class="text-sm text-slate-600 dark:text-slate-400">
-                {{ member.overallScore }} total points
-              </p>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-green-600">{{ category.profiles.filter(p => p.tier).length }}</div>
+              <div class="text-sm text-slate-600 dark:text-slate-400">Ranked</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-yellow-600">{{ category.profiles.filter(p => !p.tier).length }}</div>
+              <div class="text-sm text-slate-600 dark:text-slate-400">Unranked</div>
             </div>
           </div>
-
-          <!-- Quick Actions -->
-          <div class="flex items-center space-x-2">
+          
+          <!-- Action Button -->
+          <div class="mt-3">
             <UButton 
-              to="/admin/profiles" 
-              variant="ghost" 
+              :to="`/category/${category.category.slug}`"
+              variant="outline"
               size="sm"
-              class="text-slate-600 hover:text-indigo-600"
+              class="w-full"
             >
-              <Icon name="heroicons:pencil" class="w-4 h-4" />
-            </UButton>
-            <UButton 
-              to="/admin/scores" 
-              variant="ghost" 
-              size="sm"
-              class="text-slate-600 hover:text-emerald-600"
-            >
-              <Icon name="heroicons:chart-bar" class="w-4 h-4" />
+              <Icon name="heroicons:chart-bar" class="w-4 h-4 mr-2" />
+              Manage Rankings
             </UButton>
           </div>
-        </div>
-
-        <!-- View All Link -->
-        <div v-if="leaderboardData.overall.length > 5" class="text-center pt-4">
-          <UButton 
-            to="/leaderboard" 
-            variant="ghost"
-            class="text-indigo-600 hover:text-indigo-700"
-          >
-            View all {{ leaderboardData.overall.length }} members
-            <Icon name="heroicons:arrow-right" class="w-4 h-4 ml-2" />
-          </UButton>
         </div>
       </div>
 
@@ -209,11 +170,11 @@ const { leaderboardData, pending } = useLeaderboard()
 const stats = computed(() => {
   if (!leaderboardData.value) return { totalProfiles: 0, totalCategories: 0, totalScores: 0 }
   
-  const totalProfiles = leaderboardData.value.overall.length
-  const totalCategories = leaderboardData.value.categories?.length || 0
-  const totalScores = leaderboardData.value.overall.reduce((sum, member) => {
-    return sum + Object.keys(member.byCategory).length
-  }, 0)
+  const totalProfiles = leaderboardData.value.totalProfiles || 0
+  const totalCategories = leaderboardData.value.totalCategories || 0
+  const totalScores = leaderboardData.value.categories?.reduce((sum, category) => {
+    return sum + (category.profiles?.length || 0)
+  }, 0) || 0
   
   return { totalProfiles, totalCategories, totalScores }
 })

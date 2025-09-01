@@ -36,6 +36,7 @@ model Score {
   profileId  String
   categoryId String
   value      Int
+  tier       String?  // S, A, B, C, D, or null
   createdAt  DateTime @default(now())
 
   profile    Profile  @relation(fields: [profileId], references: [id])

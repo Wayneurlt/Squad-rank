@@ -31,12 +31,31 @@ export interface LeaderboardRow {
   byCategory: Record<string, number>
 }
 
+export interface TieredProfile {
+  profile: Profile
+  score: number
+  categoryId: string
+  tier: 'S' | 'A' | 'B' | 'C' | 'D' | null
+}
+
+export interface CategoryRanking {
+  category: Category
+  profiles: TieredProfile[]
+  totalParticipants: number
+  tiers: {
+    S: TieredProfile[]
+    A: TieredProfile[]
+    B: TieredProfile[]
+    C: TieredProfile[]
+    D: TieredProfile[]
+  }
+}
+
 export interface LeaderboardResponse {
-  overall: LeaderboardRow[]
-  categories: {
-    category: Category
-    top: LeaderboardRow[]
-  }[]
+  categories: CategoryRanking[]
+  totalProfiles?: number
+  totalCategories?: number
+  currentCategory?: Category
 }
 
 export interface ApiResponse<T = any> {
